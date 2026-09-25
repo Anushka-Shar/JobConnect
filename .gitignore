@@ -1,0 +1,12 @@
+node_modules/
+.env
+database/*.db
+database/*.db-journal
+database/*.db-wal
+database/*.db-shm
+public/uploads/avatars/*
+public/uploads/resumes/*
+!public/uploads/avatars/.gitkeep
+!public/uploads/resumes/.gitkeep
+npm-debug.log*
+.DS_Store

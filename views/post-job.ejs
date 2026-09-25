@@ -1,0 +1,62 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container" style="max-width:700px;">
+  <div class="card">
+    <h2 class="card-title">Post a new job</h2>
+    <form method="POST" action="/jobs/new">
+      <label>Job title</label>
+      <input type="text" name="title" placeholder="e.g. Senior Backend Engineer" required>
+
+      <label>Description</label>
+      <textarea name="description" placeholder="Responsibilities, requirements, benefits..." style="min-height:140px;"></textarea>
+
+      <label>Required skills (comma separated)</label>
+      <input type="text" name="skills_required" placeholder="Node.js, PostgreSQL, AWS, REST APIs" required>
+
+      <div class="form-row">
+        <div>
+          <label>Location</label>
+          <input type="text" name="location" placeholder="Bengaluru, India / Remote">
+        </div>
+        <div>
+          <label>Job type</label>
+          <select name="job_type">
+            <option>Full-time</option><option>Part-time</option><option>Internship</option><option>Contract</option><option>Remote</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Min. experience (years)</label>
+          <input type="number" step="0.5" min="0" name="experience_required" placeholder="2">
+        </div>
+        <div>
+          <label>Application deadline</label>
+          <input type="date" name="deadline">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Salary min (₹/yr)</label>
+          <input type="number" name="salary_min" placeholder="600000">
+        </div>
+        <div>
+          <label>Salary max (₹/yr)</label>
+          <input type="number" name="salary_max" placeholder="1200000">
+        </div>
+      </div>
+
+      <div class="ai-box" style="margin-top:18px;">
+        <span class="spark">✨</span>
+        <div>Once posted, our AI matching engine automatically scans every job seeker's profile and notifies strong matches (55%+ fit) instantly.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;">Post job</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

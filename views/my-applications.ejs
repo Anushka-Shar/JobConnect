@@ -1,0 +1,25 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container" style="max-width:800px;">
+  <div class="card">
+    <h2 class="card-title">My Applications</h2>
+    <% if (!applications.length) { %>
+      <div class="empty-state"><div class="big-icon">📄</div>You haven't applied to any jobs yet.<br><a href="/jobs" class="btn btn-primary btn-sm" style="margin-top:14px;">Browse jobs</a></div>
+    <% } %>
+    <% applications.forEach(a => { %>
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--border);">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div class="job-logo"><%= a.company_name.charAt(0) %></div>
+          <div>
+            <a href="/jobs/<%= a.job_id %>" style="font-weight:600;"><%= a.title %></a>
+            <div style="color:var(--muted); font-size:0.8rem;"><%= a.company_name %> • <%= a.location %> • Applied <%= new Date(a.applied_at).toLocaleDateString() %></div>
+          </div>
+        </div>
+        <span class="status-pill status-<%= a.status %>"><%= a.status %></span>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

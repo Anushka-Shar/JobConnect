@@ -1,0 +1,85 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container">
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="job-row-top">
+          <div style="display:flex; gap:14px;">
+            <div class="job-logo" style="width:64px;height:64px;font-size:1.5rem;"><%= job.company_name.charAt(0) %></div>
+            <div>
+              <h1 style="font-size:1.4rem; margin:0 0 4px;"><%= job.title %></h1>
+              <div class="job-company"><a href="/companies/<%= job.company_id %>" class="gradient-text"><%= job.company_name %></a> • <%= job.location || 'Location flexible' %></div>
+            </div>
+          </div>
+          <% if (matchResult) { %>
+            <span class="match-badge <%= matchResult.score < 30 ? 'low' : '' %>" style="font-size:0.95rem; padding:8px 16px;">✨ <%= matchResult.score %>% match</span>
+          <% } %>
+        </div>
+
+        <div class="job-meta" style="margin-top:16px;">
+          <span class="tag"><%= job.job_type %></span>
+          <% if (job.experience_required) { %><span class="tag"><%= job.experience_required %>+ yrs experience</span><% } %>
+          <% if (job.salary_min || job.salary_max) { %><span class="tag">₹<%= job.salary_min %> - ₹<%= job.salary_max %></span><% } %>
+          <% if (job.deadline) { %><span class="tag">Apply by <%= job.deadline %></span><% } %>
+          <span class="tag"><%= applicantCount %> applicant<%= applicantCount !== 1 ? 's' : '' %></span>
+        </div>
+
+        <% if (aiExplanation) { %>
+          <div class="ai-box" style="margin-top:16px;">
+            <span class="spark">✨</span>
+            <div><strong>Why this matches you:</strong> <%= aiExplanation %></div>
+          </div>
+        <% } %>
+
+        <div class="divider"></div>
+        <h3 style="font-size:1rem;">About the role</h3>
+        <p style="line-height:1.7; color:#dcdadf; white-space:pre-line;"><%= job.description || 'No description provided.' %></p>
+
+        <h3 style="font-size:1rem; margin-top:20px;">Required skills</h3>
+        <div class="job-meta">
+          <% (job.skills_required || '').split(',').filter(s=>s.trim()).forEach(skill => {
+               const matched = matchResult && matchResult.matchedSkills.includes(skill.trim().toLowerCase());
+          %>
+            <span class="tag <%= matched ? 'tag-skill' : '' %>"><%= matched ? '✓ ' : '' %><%= skill.trim() %></span>
+          <% }) %>
+        </div>
+
+        <div class="divider"></div>
+        <% if (!currentUser) { %>
+          <a href="/login" class="btn btn-primary">Log in to apply</a>
+        <% } else if (currentUser.role === 'recruiter') { %>
+          <% if (job.posted_by === currentUser.id) { %>
+            <a href="/jobs/<%= job.id %>/applicants" class="btn btn-primary">View Applicants</a>
+          <% } %>
+        <% } else if (alreadyApplied) { %>
+          <button class="btn btn-ghost" disabled>✅ Application submitted</button>
+        <% } else { %>
+          <form method="POST" action="/jobs/<%= job.id %>/apply">
+            <label>Cover letter (optional)</label>
+            <textarea name="cover_letter" placeholder="Tell the recruiter why you're a great fit..."></textarea>
+            <button type="submit" class="btn btn-primary" style="margin-top:12px;">Apply now</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="margin:0 0 10px;">About <%= job.company_name %></h4>
+        <p class="form-hint"><%= job.company_description || 'No company description yet.' %></p>
+        <a href="/companies/<%= job.company_id %>" class="btn btn-outline btn-sm btn-block" style="margin-top:10px;">View company page</a>
+      </div>
+      <% if (currentUser) { %>
+      <div class="card">
+        <form method="POST" action="/jobs/<%= job.id %>/save">
+          <button class="btn btn-ghost btn-block" type="submit">🔖 Save this job</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

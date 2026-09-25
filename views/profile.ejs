@@ -1,0 +1,70 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container" style="max-width:800px;">
+  <div class="card">
+    <div class="cover" style="height:90px; margin:-20px -20px 0; border-radius:14px 14px 0 0; background:linear-gradient(120deg, var(--red-2), #200409, var(--bg-1));"></div>
+    <div style="display:flex; gap:20px; align-items:flex-end; margin-top:-45px;">
+      <% if (profileUser.avatar) { %>
+        <img src="<%= profileUser.avatar %>" class="avatar-lg" alt="">
+      <% } else { %>
+        <div class="avatar-lg avatar-placeholder" style="font-size:2rem;"><%= profileUser.name.charAt(0) %></div>
+      <% } %>
+      <div style="flex:1;">
+        <h1 style="font-size:1.5rem; margin:0;"><%= profileUser.name %></h1>
+        <div style="color:var(--muted);"><%= profileUser.headline || '' %></div>
+      </div>
+      <% if (currentUser && currentUser.id === profileUser.id) { %>
+        <a href="/settings/profile" class="btn btn-outline btn-sm">Edit Profile</a>
+      <% } else if (currentUser) { %>
+        <% if (connectionStatus === 'none') { %>
+          <form method="POST" action="/network/connect/<%= profileUser.id %>"><button class="btn btn-primary btn-sm">+ Connect</button></form>
+        <% } else if (connectionStatus === 'connected') { %>
+          <button class="btn btn-ghost btn-sm" disabled>✓ Connected</button>
+        <% } else { %>
+          <button class="btn btn-ghost btn-sm" disabled>Pending</button>
+        <% } %>
+      <% } %>
+    </div>
+
+    <div class="job-meta" style="margin-top:16px;">
+      <% if (profileUser.location) { %><span class="tag">📍 <%= profileUser.location %></span><% } %>
+      <% if (profileUser.experience_years) { %><span class="tag"><%= profileUser.experience_years %> yrs experience</span><% } %>
+      <% if (profileUser.education) { %><span class="tag">🎓 <%= profileUser.education %></span><% } %>
+      <% if (company) { %><span class="tag">🏢 <a href="/companies/<%= company.id %>"><%= company.name %></a></span><% } %>
+      <% if (profileUser.open_to_work && profileUser.role === 'seeker') { %><span class="tag tag-skill">🟢 Open to work</span><% } %>
+    </div>
+
+    <% if (profileUser.bio) { %>
+      <div class="divider"></div>
+      <h3 style="font-size:1rem;">About</h3>
+      <p style="line-height:1.6; color:#dcdadf; white-space:pre-line;"><%= profileUser.bio %></p>
+    <% } %>
+
+    <% if (profileUser.skills) { %>
+      <div class="divider"></div>
+      <h3 style="font-size:1rem;">Skills</h3>
+      <div class="job-meta">
+        <% profileUser.skills.split(',').filter(s=>s.trim()).forEach(skill => { %>
+          <span class="tag tag-skill"><%= skill.trim() %></span>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <% if (profileUser.resume_path) { %>
+      <div class="divider"></div>
+      <a href="<%= profileUser.resume_path %>" target="_blank" class="btn btn-outline btn-sm">📄 View Resume</a>
+    <% } %>
+  </div>
+
+  <% if (posts.length) { %>
+    <div class="card">
+      <h3 style="font-size:1rem; margin:0 0 10px;">Recent activity</h3>
+      <% posts.forEach(p => { %>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:0.9rem;"><%= p.content %></div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

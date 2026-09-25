@@ -1,0 +1,11 @@
+{
+  "watch": ["server.js", "config", "middleware", "routes", "utils", "views"],
+  "ext": "js,ejs,json",
+  "ignore": [
+    "node_modules/*",
+    "database/*.db",
+    "database/*.db-*",
+    "public/uploads/*"
+  ],
+  "delay": "300"
+}

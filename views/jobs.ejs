@@ -1,0 +1,62 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container">
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <form method="GET" action="/jobs" class="form-row" style="grid-template-columns: 2fr 1fr 1fr auto;">
+          <div>
+            <label>Search</label>
+            <input type="text" name="q" placeholder="Title, skill, or company" value="<%= query.q || '' %>">
+          </div>
+          <div>
+            <label>Location</label>
+            <input type="text" name="location" placeholder="City or Remote" value="<%= query.location || '' %>">
+          </div>
+          <div>
+            <label>Job type</label>
+            <select name="job_type">
+              <option value="">Any</option>
+              <% ['Full-time','Part-time','Internship','Contract','Remote'].forEach(t => { %>
+                <option value="<%= t %>" <%= query.job_type === t ? 'selected' : '' %>><%= t %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button class="btn btn-primary btn-block" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="section-title" style="margin-top:18px;">
+        <h2><%= jobs.length %> job<%= jobs.length !== 1 ? 's' : '' %> found</h2>
+        <% if (currentUser) { %><span class="form-hint">Sorted by AI match score</span><% } %>
+      </div>
+
+      <% if (!jobs.length) { %>
+        <div class="card empty-state"><div class="big-icon">🔍</div>No jobs match your search yet. Try different keywords.</div>
+      <% } %>
+      <% jobs.forEach(job => { %>
+        <%- include('partials/job-card', { job }) %>
+      <% }) %>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="margin:0 0 10px;">💡 Tip</h4>
+        <p class="form-hint">Keep your skills list on your profile up to date — the AI matching score is calculated directly from it.</p>
+        <a href="/settings/profile" class="btn btn-outline btn-sm btn-block" style="margin-top:10px;">Update my skills</a>
+      </div>
+      <% if (currentUser && currentUser.role === 'recruiter') { %>
+      <div class="card">
+        <h4 style="margin:0 0 10px;">Hiring?</h4>
+        <p class="form-hint">Post a job and we'll automatically notify every strong-match candidate.</p>
+        <a href="/jobs/new" class="btn btn-primary btn-sm btn-block" style="margin-top:10px;">Post a job</a>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,52 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container" style="max-width:700px;">
+  <div class="card">
+    <h2 class="card-title">Edit Profile</h2>
+    <form method="POST" action="/settings/profile" enctype="multipart/form-data">
+      <label>Profile photo</label>
+      <input type="file" name="avatar" accept="image/*">
+
+      <label>Resume (PDF)</label>
+      <input type="file" name="resume" accept=".pdf,.doc,.docx">
+
+      <label>Full name</label>
+      <input type="text" name="name" value="<%= currentUser.name %>" required>
+
+      <label>Headline</label>
+      <input type="text" name="headline" value="<%= currentUser.headline %>" placeholder="e.g. Product Designer at Acme">
+
+      <label>Bio</label>
+      <textarea name="bio" placeholder="Tell your story..."><%= currentUser.bio %></textarea>
+
+      <div class="form-row">
+        <div>
+          <label>Location</label>
+          <input type="text" name="location" value="<%= currentUser.location %>">
+        </div>
+        <div>
+          <label>Experience (years)</label>
+          <input type="number" step="0.5" min="0" name="experience_years" value="<%= currentUser.experience_years %>">
+        </div>
+      </div>
+
+      <label>Skills (comma separated) — powers your AI job match score</label>
+      <input type="text" name="skills" value="<%= currentUser.skills %>" placeholder="JavaScript, React, Node.js">
+
+      <label>Education</label>
+      <input type="text" name="education" value="<%= currentUser.education %>">
+
+      <% if (currentUser.role === 'seeker') { %>
+      <div class="checkbox-row">
+        <input type="checkbox" name="open_to_work" id="otw" <%= currentUser.open_to_work ? 'checked' : '' %>>
+        <label for="otw" style="margin:0;">Open to work (lets recruiters and AI matching know you're actively looking)</label>
+      </div>
+      <% } %>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px;">Save changes</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

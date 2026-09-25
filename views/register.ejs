@@ -1,0 +1,62 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">Join <span class="gradient-text">JobConnect</span></div>
+    <form method="POST" action="/register">
+      <label>I am a...</label>
+      <div class="role-toggle">
+        <label><input type="radio" name="role" value="seeker" checked><span>🎯 Job Seeker</span></label>
+        <label><input type="radio" name="role" value="recruiter"><span>🏢 Recruiter</span></label>
+      </div>
+
+      <label>Full name</label>
+      <input type="text" name="name" placeholder="Jordan Lee" required>
+
+      <label>Email</label>
+      <input type="email" name="email" placeholder="you@example.com" required>
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Choose a strong password" required minlength="6">
+
+      <label>Headline</label>
+      <input type="text" name="headline" placeholder="e.g. Frontend Developer | React & Node">
+
+      <div class="form-row">
+        <div>
+          <label>Location</label>
+          <input type="text" name="location" placeholder="Bengaluru, India">
+        </div>
+        <div>
+          <label>Experience (years)</label>
+          <input type="number" step="0.5" min="0" name="experience_years" placeholder="2">
+        </div>
+      </div>
+
+      <label>Skills (comma separated)</label>
+      <input type="text" name="skills" placeholder="JavaScript, React, Node.js, SQL">
+
+      <label>Education</label>
+      <input type="text" name="education" placeholder="B.Tech Computer Science">
+
+      <label id="companyLabel" style="display:none;">Company name (for recruiters)</label>
+      <input id="companyInput" style="display:none;" type="text" name="company_name" placeholder="Acme Inc.">
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:22px;">Create account</button>
+    </form>
+    <div class="auth-switch">Already have an account? <a href="/login" class="gradient-text" style="font-weight:600;">Log in</a></div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('input[name="role"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const isRecruiter = document.querySelector('input[name="role"]:checked').value === 'recruiter';
+      document.getElementById('companyLabel').style.display = isRecruiter ? 'block' : 'none';
+      document.getElementById('companyInput').style.display = isRecruiter ? 'block' : 'none';
+    });
+  });
+</script>
+
+<%- include('partials/footer') %>

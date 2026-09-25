@@ -1,0 +1,49 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container">
+  <div class="card">
+    <h2 class="card-title">Applicants — <%= job.title %></h2>
+    <% if (!applicants.length) { %>
+      <div class="empty-state"><div class="big-icon">📭</div>No applications yet.</div>
+    <% } %>
+    <table>
+      <thead>
+        <tr><th>Candidate</th><th>Match</th><th>Skills</th><th>Experience</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <% applicants.forEach(a => { %>
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <% if (a.avatar) { %><img src="<%= a.avatar %>" class="avatar-sm" alt="">
+              <% } else { %><div class="avatar-sm avatar-placeholder" style="font-size:0.7rem;"><%= a.name.charAt(0) %></div><% } %>
+              <div>
+                <a href="/profile/<%= a.user_id %>" style="font-weight:600;"><%= a.name %></a>
+                <div style="color:var(--muted); font-size:0.75rem;"><%= a.headline || '' %></div>
+              </div>
+            </div>
+          </td>
+          <td><span class="match-badge <%= a.match_score < 30 ? 'low' : '' %>" style="font-size:0.7rem;"><%= Math.round(a.match_score) %>%</span></td>
+          <td style="max-width:200px; font-size:0.78rem; color:var(--muted);"><%= a.skills %></td>
+          <td><%= a.experience_years %> yrs</td>
+          <td><span class="status-pill status-<%= a.status %>"><%= a.status %></span></td>
+          <td>
+            <form method="POST" action="/applications/<%= a.id %>/status" style="display:flex; gap:6px;">
+              <select name="status" style="font-size:0.75rem; padding:5px 8px;">
+                <% ['applied','reviewed','shortlisted','hired','rejected'].forEach(s => { %>
+                  <option value="<%= s %>" <%= a.status === s ? 'selected' : '' %>><%= s %></option>
+                <% }) %>
+              </select>
+              <button class="btn btn-ghost btn-sm" type="submit">Update</button>
+            </form>
+            <% if (a.resume_path) { %><a href="<%= a.resume_path %>" target="_blank" class="btn btn-outline btn-sm" style="margin-top:6px;">Resume</a><% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

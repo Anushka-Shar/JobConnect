@@ -1,0 +1,23 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container" style="max-width:700px;">
+  <div class="card">
+    <h2 class="card-title">Notifications</h2>
+    <% if (!notifications.length) { %>
+      <div class="empty-state"><div class="big-icon">🔔</div>You're all caught up.</div>
+    <% } %>
+    <% const icons = { job_match: '✨', connection: '🤝', application_update: '📄', info: 'ℹ️' }; %>
+    <% notifications.forEach(n => { %>
+      <div class="notif-item <%= !n.is_read ? 'notif-unread' : '' %>">
+        <div class="notif-icon"><%= icons[n.type] || 'ℹ️' %></div>
+        <div>
+          <div style="font-size:0.9rem;"><a href="<%= n.link || '#' %>"><%= n.message %></a></div>
+          <div class="notif-time"><%= new Date(n.created_at).toLocaleString() %></div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,30 @@
+<div class="card card-hover job-card">
+  <div class="job-logo"><%= job.company_name ? job.company_name.charAt(0).toUpperCase() : '?' %></div>
+  <div style="flex:1;">
+    <div class="job-row-top">
+      <div>
+        <h3 class="job-title"><a href="/jobs/<%= job.id %>"><%= job.title %></a></h3>
+        <div class="job-company"><%= job.company_name %> • <%= job.location || 'Location flexible' %></div>
+      </div>
+      <% if (typeof job.score !== 'undefined') { %>
+        <span class="match-badge <%= job.score < 30 ? 'low' : '' %>">✨ <%= job.score %>% match</span>
+      <% } %>
+    </div>
+    <div class="job-meta">
+      <span class="tag"><%= job.job_type %></span>
+      <% if (job.experience_required) { %><span class="tag"><%= job.experience_required %>+ yrs</span><% } %>
+      <% if (job.salary_min || job.salary_max) { %><span class="tag">₹<%= job.salary_min %> - ₹<%= job.salary_max %></span><% } %>
+      <% (job.skills_required || '').split(',').filter(s => s.trim()).slice(0, 5).forEach(skill => { %>
+        <span class="tag tag-skill"><%= skill.trim() %></span>
+      <% }) %>
+    </div>
+    <div class="job-actions">
+      <a href="/jobs/<%= job.id %>" class="btn btn-primary btn-sm">View & Apply</a>
+      <% if (currentUser) { %>
+      <form method="POST" action="/jobs/<%= job.id %>/save" style="display:inline;">
+        <button class="btn btn-ghost btn-sm" type="submit">🔖 Save</button>
+      </form>
+      <% } %>
+    </div>
+  </div>
+</div>

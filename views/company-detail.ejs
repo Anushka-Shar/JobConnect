@@ -1,0 +1,50 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container">
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div style="display:flex; gap:16px; align-items:center;">
+          <div class="company-logo" style="width:70px; height:70px; font-size:1.8rem;"><%= company.name.charAt(0) %></div>
+          <div>
+            <h1 style="font-size:1.4rem; margin:0;"><%= company.name %></h1>
+            <div style="color:var(--muted);"><%= company.industry || '' %> <%= company.location ? '• ' + company.location : '' %></div>
+          </div>
+        </div>
+        <% if (company.description) { %>
+          <div class="divider"></div>
+          <p style="line-height:1.6; color:#dcdadf;"><%= company.description %></p>
+        <% } %>
+        <% if (company.website) { %>
+          <a href="<%= company.website %>" target="_blank" class="btn btn-outline btn-sm" style="margin-top:10px;">🔗 Website</a>
+        <% } %>
+      </div>
+
+      <div class="section-title" style="margin-top:20px;"><h2>Open roles (<%= jobs.length %>)</h2></div>
+      <% jobs.forEach(job => { %>
+        <%- include('partials/job-card', { job: { ...job, company_name: company.name } }) %>
+      <% }) %>
+      <% if (!jobs.length) { %><div class="card empty-state">No open roles right now.</div><% } %>
+    </div>
+
+    <div>
+      <div class="card">
+        <h4 style="margin:0 0 10px;">People at <%= company.name %></h4>
+        <% employees.forEach(e => { %>
+          <div style="display:flex; align-items:center; gap:10px; padding:8px 0;">
+            <% if (e.avatar) { %><img src="<%= e.avatar %>" class="avatar-sm" alt="">
+            <% } else { %><div class="avatar-sm avatar-placeholder" style="font-size:0.7rem;"><%= e.name.charAt(0) %></div><% } %>
+            <div>
+              <a href="/profile/<%= e.id %>" style="font-size:0.85rem; font-weight:600;"><%= e.name %></a>
+              <div style="color:var(--muted); font-size:0.72rem;"><%= e.headline || '' %></div>
+            </div>
+          </div>
+        <% }) %>
+        <% if (!employees.length) { %><div class="form-hint">No profiles linked yet.</div><% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

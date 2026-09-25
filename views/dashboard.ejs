@@ -1,0 +1,135 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<div class="page-wrap container">
+  <div class="grid-3">
+
+    <!-- LEFT: mini profile -->
+    <div>
+      <div class="card mini-profile">
+        <div class="cover"></div>
+        <% if (currentUser.avatar) { %>
+          <img src="<%= currentUser.avatar %>" class="avatar-lg" alt="">
+        <% } else { %>
+          <div class="avatar-lg avatar-placeholder" style="margin:-40px auto 10px; font-size:1.6rem;"><%= currentUser.name.charAt(0) %></div>
+        <% } %>
+        <h3><%= currentUser.name %></h3>
+        <div class="headline"><%= currentUser.headline || (currentUser.role === 'recruiter' ? 'Recruiter' : 'Job Seeker') %></div>
+        <div class="stat-row"><span>Profile</span><strong><a href="/profile/<%= currentUser.id %>" class="gradient-text">View</a></strong></div>
+        <div class="stat-row"><span>Role</span><strong style="text-transform:capitalize;"><%= currentUser.role %></strong></div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 10px;">Quick links</h4>
+        <ul style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
+          <li><a href="/applications">📄 My Applications</a></li>
+          <li><a href="/saved">🔖 Saved Jobs</a></li>
+          <li><a href="/network">👥 My Network</a></li>
+          <% if (currentUser.role === 'recruiter') { %>
+            <li><a href="/jobs/new">➕ Post a Job</a></li>
+          <% } %>
+          <li><a href="/settings/profile">⚙️ Edit Profile</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CENTER: feed -->
+    <div>
+      <div class="card post-composer">
+        <form method="POST" action="/posts">
+          <textarea name="content" placeholder="Share an update with your network..."></textarea>
+          <div style="text-align:right; margin-top:8px;">
+            <button class="btn btn-primary btn-sm" type="submit">Post</button>
+          </div>
+        </form>
+      </div>
+
+      <% if (currentUser.role === 'recruiter' && myJobs.length) { %>
+        <div class="card">
+          <div class="section-title"><h2>Your Posted Jobs</h2><a href="/jobs/new" class="btn btn-outline btn-sm">+ New Job</a></div>
+          <% myJobs.slice(0,4).forEach(job => { %>
+            <div style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <a href="/jobs/<%= job.id %>" style="font-weight:600;"><%= job.title %></a>
+                <div style="color:var(--muted); font-size:0.8rem;"><%= job.location %> • <%= job.job_type %></div>
+              </div>
+              <a href="/jobs/<%= job.id %>/applicants" class="btn btn-ghost btn-sm">Applicants</a>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="card">
+        <h2 style="font-size:1.1rem; margin:0 0 14px;">Network Feed</h2>
+        <% if (!posts.length) { %>
+          <div class="empty-state"><div class="big-icon">📰</div>No posts yet. Be the first to share something!</div>
+        <% } %>
+        <% posts.forEach(post => { %>
+          <div class="post-item">
+            <% if (post.avatar) { %><img src="<%= post.avatar %>" class="avatar-md" alt="">
+            <% } else { %><div class="avatar-md avatar-placeholder"><%= post.name.charAt(0) %></div><% } %>
+            <div>
+              <div style="font-weight:700; font-size:0.9rem;"><a href="/profile/<%= post.user_id %>"><%= post.name %></a></div>
+              <div style="color:var(--muted); font-size:0.78rem; margin-bottom:6px;"><%= post.headline || '' %></div>
+              <div style="font-size:0.92rem; line-height:1.5;"><%= post.content %></div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- RIGHT: AI recommendations -->
+    <div>
+      <div class="card">
+        <div class="section-title"><h2>✨ AI Job Matches</h2></div>
+        <% if (!recommendedJobs.length) { %>
+          <div class="form-hint">Add skills to your profile to unlock personalized matches.</div>
+        <% } %>
+        <% recommendedJobs.forEach(job => { %>
+          <div style="padding:10px 0; border-bottom:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <a href="/jobs/<%= job.id %>" style="font-weight:600; font-size:0.88rem;"><%= job.title %></a>
+              <span class="match-badge <%= job.score < 30 ? 'low' : '' %>" style="font-size:0.68rem; padding:3px 9px;"><%= job.score %>%</span>
+            </div>
+            <div style="color:var(--muted); font-size:0.78rem;"><%= job.company_name %></div>
+          </div>
+        <% }) %>
+        <a href="/jobs" class="btn btn-ghost btn-sm btn-block" style="margin-top:12px;">See all jobs</a>
+      </div>
+
+      <% if (recommendedCompanies.length) { %>
+      <div class="card">
+        <div class="section-title"><h2>🏢 Companies for you</h2></div>
+        <% recommendedCompanies.forEach(c => { %>
+          <div class="company-card" style="padding:8px 0;">
+            <div class="company-logo"><%= c.name.charAt(0) %></div>
+            <div style="flex:1;">
+              <a href="/companies/<%= c.id %>" style="font-weight:600; font-size:0.85rem;"><%= c.name %></a>
+              <div style="color:var(--muted); font-size:0.75rem;"><%= c.openRoles %> open role<%= c.openRoles !== 1 ? 's' : '' %></div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <% } %>
+
+      <% if (recommendedPeople.length) { %>
+      <div class="card">
+        <div class="section-title"><h2>🤝 People you may know</h2></div>
+        <% recommendedPeople.slice(0,3).forEach(p => { %>
+          <div style="display:flex; align-items:center; gap:10px; padding:8px 0;">
+            <% if (p.avatar) { %><img src="<%= p.avatar %>" class="avatar-sm" alt="">
+            <% } else { %><div class="avatar-sm avatar-placeholder" style="font-size:0.7rem;"><%= p.name.charAt(0) %></div><% } %>
+            <div style="flex:1;">
+              <a href="/profile/<%= p.id %>" style="font-size:0.83rem; font-weight:600;"><%= p.name %></a>
+              <div style="color:var(--muted); font-size:0.72rem;"><%= p.headline || '' %></div>
+            </div>
+          </div>
+        <% }) %>
+        <a href="/network" class="btn btn-ghost btn-sm btn-block" style="margin-top:8px;">View network</a>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
